@@ -1,5 +1,5 @@
 import { AppProps } from "next/app";
-import Navigation from "../components/Navigation";
+import Navigation from "../components/navigation";
 
 import './reset-style.css'
 import './global-style.css'

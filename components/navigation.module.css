@@ -1,4 +1,24 @@
 .navigation {
   width: 300px;
   background: aliceblue;
+  font-size: 18px;
+  padding: 24px;
+  text-align: right;
+}
+
+.navigation a {
+  text-decoration:none;
+  color:inherit;
+}
+
+ul.unset-list {
+  margin: 0;
+}
+
+.unset-list li {
+  list-style: none;
+}
+
+.nav-item {
+  margin: 12px 0;
 }
