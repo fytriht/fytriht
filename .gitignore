@@ -2,5 +2,6 @@ _site/
 .sass-cache
 .ruby-version
 .next/
+.env.local
 node_modules
 out
