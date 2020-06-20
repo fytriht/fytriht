@@ -1,5 +1,7 @@
 html, body {
   height: 100%;
+  /* copy from fluent design */
+  font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
 }
 
 #__next {
@@ -10,4 +12,9 @@ html, body {
 
 html * {
   box-sizing: border-box
+}
+
+:root {
+  --nav-width: 280px;
+  --content-width: 800px;
 }

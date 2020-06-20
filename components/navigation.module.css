@@ -1,9 +1,9 @@
 .navigation {
-  width: 300px;
-  background: aliceblue;
+  width: var(--nav-width);
   font-size: 18px;
-  padding: 24px;
+  padding: 30px;
   text-align: right;
+  flex: none;
 }
 
 .navigation a {
@@ -21,4 +21,15 @@ ul.unset-list {
 
 .nav-item {
   margin: 12px 0;
+}
+
+.tag-list {
+  font-size: 14px;
+  color: #949494;
+  font-weight: 300;
+  margin: 14px -14px;
+}
+
+.tag-item {
+  margin: 6px 0;
 }

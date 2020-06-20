@@ -3,3 +3,4 @@ _site/
 .ruby-version
 .next/
 node_modules
+out
