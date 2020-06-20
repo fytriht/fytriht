@@ -1,4 +1,4 @@
-import got from "got";
+import got, { Got } from "got";
 import assert from "assert";
 
 const USER_ID = process.env.DOUBAN_USER_ID;
@@ -6,13 +6,6 @@ assert(USER_ID !== undefined);
 
 const COOKIE = process.env.DOUBAN_COOKIE;
 assert(COOKIE !== undefined);
-
-const doubanClient = got.extend({
-  headers: {
-    cookie: COOKIE,
-    Referer: "https://m.douban.com/mine/movie",
-  },
-});
 
 interface GetInterestsQuery {
   start: number;
@@ -54,51 +47,61 @@ interface GetInterestsResponse {
   interests: Interest[];
 }
 
-const fetchInterests = async (
-  userId: string,
-  { start, count }: GetInterestsQuery
-): Promise<GetInterestsResponse> => {
-  const searchParams = new URLSearchParams([
-    ["status", "done"],
-    ["start", String(start)],
-    ["count", String(count)],
-  ]).toString();
-
-  const res = await doubanClient(
-    `https://m.douban.com/rexxar/api/v2/user/${userId}/interests`,
-    { searchParams: searchParams, responseType: "json" }
-  );
-  return res.body as GetInterestsResponse;
-};
-
 const delay = (ms: number): Promise<void> => {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
 };
 
-const fetchAllInterests = async () => {
-  let currStart = 0;
-  let currTotol = Number.MAX_SAFE_INTEGER;
-  let count = 50;
-  let ret: Interest[] = [];
-  while (currStart <= currTotol) {
-    const { start, total, interests } = await fetchInterests(USER_ID, {
-      start: currStart,
-      count,
+class DoubanClient {
+  api: Got;
+
+  constructor() {
+    this.api = got.extend({
+      headers: {
+        cookie: COOKIE,
+        Referer: "https://m.douban.com/mine/movie",
+      },
     });
-    console.log("got res: ", { start, total }, interests.length);
-    ret.push(...interests);
-    currStart = start + count;
-    currTotol = total;
-    // FIXME: remove temp code
-    if (process.env.NODE_ENV === "development") {
-      break;
-    }
-    await delay(1000);
   }
-  return ret;
-};
+
+  public async fetchAllInterests() {
+    let currStart = 0;
+    let currTotol = Number.MAX_SAFE_INTEGER;
+    let count = 50;
+    let ret: Interest[] = [];
+    while (currStart <= currTotol) {
+      const { start, total, interests } = await this.fetchInterests(USER_ID!, {
+        start: currStart,
+        count,
+      });
+      console.log("got res: ", { start, total }, interests.length);
+      ret.push(...interests);
+      currStart = start + count;
+      currTotol = total;
+      await delay(1000);
+      break
+    }
+    return ret;
+  }
+
+  private async fetchInterests(
+    userId: string,
+    { start, count }: GetInterestsQuery
+  ): Promise<GetInterestsResponse> {
+    const searchParams = new URLSearchParams([
+      ["status", "done"],
+      ["start", String(start)],
+      ["count", String(count)],
+    ]).toString();
+
+    const res = await this.api(
+      `https://m.douban.com/rexxar/api/v2/user/${userId}/interests`,
+      { searchParams: searchParams, responseType: "json" }
+    );
+    return res.body as GetInterestsResponse;
+  }
+}
 
 // subject type as interest type
 // tv -> movie
@@ -177,7 +180,8 @@ const genDoubanStat = async () => {
     return (await import("./test_douban_stat.json")).default;
   }
 
-  const interests = await fetchAllInterests();
+  const doubanClient = new DoubanClient();
+  const interests = await doubanClient.fetchAllInterests();
   return OutputInterestBuilder.of(interests).filterMoviesAndBooks().build();
 };
 
