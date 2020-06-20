@@ -9,9 +9,6 @@
   </head>
   <body class="lh-copy dark-gray pa0 f6 sans-serif bg-super-white">
     <header class="tc mt4">
-      <a href="{{ site.url }}">
-        <img src="{{ site.url }}/images/scribble.png" alt="Home" width="53" height="59">
-      </a>
       <p>{{ site.title }}</p>
     </header>
     <div class="mw7 bg-white mt4 mb3 center br2-ns bt bb ba-ns b--light-gray">
@@ -43,13 +40,11 @@
         <div class="markdown-body">
           {{ content }}
         </div>
-        {% if is_post %}{% include signoff.html %}{% endif %}
       </main>
       {% if is_post %}{% include pagination.html %}{% endif %}
     </div>
     <footer class="mw7 center tc pt3 pb4 silver">
       Built with Jekyll using <a href="http://github.com/muan/scribble" class="link silver hover-blue pv1">Scribble</a>.
-      <img src="{{ site.url }}/images/scribble2.png" alt="scribble" class="mt4 db center" />
     </footer>
   </body>
 </html>
